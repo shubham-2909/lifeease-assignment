@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Team {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  players       Player[]
+  isBatting     Boolean  @default(false)
+  runsScored    Int      @default(0)
+  wicketsFallen Int      @default(0)
+  legByeRuns    Int      @default(0)
+  noBallRuns    Int      @default(0)
+  wideRuns      Int      @default(0)
+  byeRuns       Int      @default(0)
+}
+
+model Player {
+  id     String       @id @default(auto()) @map("_id") @db.ObjectId
+  name   String
+  teamId String       @db.ObjectId
+  team   Team         @relation(fields: [teamId], references: [id])
+  stats  PlayerStats?
+}
+
+model MatchStats {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  currOver     String   @default("0")
+  totalOvers   String   @default("10")
+  lastSixOvers String[] @default([])
+}
+
+model PlayerStats {
+  id                  String  @id @default(auto()) @map("_id") @db.ObjectId
+  playerId            String  @unique @db.ObjectId
+  player              Player? @relation(fields: [playerId], references: [id])
+  runsScored          Int     @default(0)
+  ballsPlayed         Int     @default(0)
+  foursCount          Int     @default(0)
+  sixesCount          Int     @default(0)
+  runsGiven           Int     @default(0)
+  wicketsTaken        Int     @default(0)
+  maidens             Int     @default(0)
+  oversBowled         String  @default("0")
+  currentlyOnStrike   Boolean @default(false)
+  currentlyNonStriker Boolean @default(false)
+  currentlyBowling    Boolean @default(false)
+}
