@@ -2,8 +2,6 @@ import { json, urlencoded } from "body-parser";
 import express, { type Express } from "express";
 import morgan from "morgan";
 import cors from "cors";
-import db from "@repo/db/client";
-import { CurrentStats } from "@repo/common/CurrentStats";
 import { getTeamStats, updateTeamStats } from "./controllers/teamController";
 export const createServer = (): Express => {
   const app = express();
@@ -14,7 +12,7 @@ export const createServer = (): Express => {
     .use(json())
     .use(cors())
     .get("/teams/get-stats", getTeamStats)
-    .patch("/teams-update-stats", updateTeamStats);
+    .patch("/teams/update-stats", updateTeamStats);
 
   return app;
 };

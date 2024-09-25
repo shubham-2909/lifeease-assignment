@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import db from "@repo/db/client";
-import { CurrentStats } from "@repo/common/CurrentStats";
+import { CurrentStats, updateStatSchema } from "@repo/common/CurrentStats";
+import { handleNormalRunsUpdate } from "../lib/helpers";
+
 export const getTeamStats = async (req: Request, res: Response) => {
   try {
     const teams = await db.team.findMany({
@@ -88,7 +90,8 @@ export const getTeamStats = async (req: Request, res: Response) => {
           oversBowled: bowler.oversBowled,
         },
       },
-      lastSixBalls: matchStats[0]?.lastSixOvers!,
+      lastSixBalls: matchStats[0]?.lastSixOvers.slice(-6)!,
+      currOver: matchStats[0]?.currOver!,
     };
     res.status(200).json(data);
   } catch (error) {
@@ -97,5 +100,75 @@ export const getTeamStats = async (req: Request, res: Response) => {
 };
 
 export const updateTeamStats = async (req: Request, res: Response) => {
+  const { data, success, error } = updateStatSchema.safeParse(req.body);
+  if (!success) {
+    const errorMessages = error.errors.map((err) => ({
+      path: err.path.join("."),
+      message: err.message,
+    }));
+
+    return res.status(400).json({
+      message: "Invalid Inputs",
+      errors: errorMessages,
+    });
+  }
+
+  const { wide, noball, legBye, runs, bye, overthrow } = data;
+
+  const players = await db.playerStats.findMany({
+    where: {
+      OR: [
+        { currentlyOnStrike: true },
+        { currentlyBowling: true },
+        { currentlyNonStriker: true },
+      ],
+    },
+    select: {
+      id: true,
+      oversBowled: true,
+      currentlyOnStrike: true,
+      currentlyNonStriker: true,
+      currentlyBowling: true,
+    },
+  });
+
+  const currmatchStats = await db.matchStats.findFirst({
+    select: { currOver: true, id: true },
+  });
+
+  const battingTeam = await db.team.findFirst({
+    where: { isBatting: true },
+    select: { id: true },
+  });
+
+  if (!battingTeam || players.length < 3 || !currmatchStats) {
+    return res.status(400).json({
+      error: "Something is wrong with your schema please run a db seed",
+    });
+  }
+
+  const striker = players.find((p) => p.currentlyOnStrike === true);
+  const bowler = players.find((p) => p.currentlyBowling === true);
+  const nonStriker = players.find((p) => p.currentlyNonStriker === true);
+
+  if (!striker || !bowler || !nonStriker) {
+    return res.status(400).json({
+      error: "Something is wrong with your schema please run a db seed",
+    });
+  }
+  // case 1 normal and normal + overthrow
+  if (!wide && !noball && !bye && !legBye) {
+    await handleNormalRunsUpdate(
+      runs,
+      overthrow,
+      currmatchStats.currOver,
+      bowler.oversBowled,
+      battingTeam.id,
+      striker.id,
+      nonStriker.id,
+      bowler.id,
+      currmatchStats.id,
+    );
+  }
   res.status(200).json({ message: "Ok" });
 };
