@@ -5,7 +5,10 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "build-api": "turbo build --filter=api",
+    "start-api": "cd apps/api && node dist/index.js",
+    "db:generate": "cd packages/db && bunx prisma generate && cd ../../"
   },
   "devDependencies": {
     "prettier": "^3.2.5",
