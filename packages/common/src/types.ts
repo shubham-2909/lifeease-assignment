@@ -1,5 +1,5 @@
 import z from "zod";
-
+export const backendUrl = "https://lifease.webdevka14.in";
 export interface CurrentStats {
   teamStats: {
     battingTeamStats: {

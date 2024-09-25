@@ -7,7 +7,9 @@
   },
   "exports": {
     "./CurrentStats": "./src/types.ts",
-    "./updateStatSchema": "./src/types.ts"
+    "./updateStatSchema": "./src/types.ts",
+    "./backendUrl": "./src/types.ts",
+    "./UpdateStatType": "./src/types.ts"
   },
   "keywords": [],
   "author": "",
