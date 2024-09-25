@@ -50,6 +50,38 @@ async function main() {
 
   const players = await prisma.player.findMany();
   for (const player of players) {
+    if (player.name === "Josh Hazlewood") {
+      await prisma.playerStats.create({
+        data: {
+          playerId: player.id,
+          currentlyBowling: true,
+        },
+      });
+
+      continue;
+    }
+
+    if (player.name === "Rohit Sharma") {
+      await prisma.playerStats.create({
+        data: {
+          playerId: player.id,
+          currentlyOnStrike: true,
+        },
+      });
+
+      continue;
+    }
+
+    if (player.name === "Virat Kohli") {
+      await prisma.playerStats.create({
+        data: {
+          playerId: player.id,
+          currentlyNonStriker: true,
+        },
+      });
+
+      continue;
+    }
     const playerStats = await prisma.playerStats.create({
       data: {
         playerId: player.id,

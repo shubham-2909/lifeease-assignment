@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import db from "@repo/db/client";
-import { CurrentStats, updateStatSchema } from "@repo/common/CurrentStats";
+import { CurrentStats } from "@repo/common/CurrentStats";
+import { updateStatSchema } from "@repo/common/updateStatSchema";
 import { handleNormalRunsUpdate } from "../lib/helpers";
 
 export const getTeamStats = async (req: Request, res: Response) => {

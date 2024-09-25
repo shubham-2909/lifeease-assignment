@@ -1,3 +1,5 @@
+import z from "zod";
+
 export interface CurrentStats {
   teamStats: {
     battingTeamStats: {
@@ -40,4 +42,22 @@ export interface CurrentStats {
     };
   };
   lastSixBalls: string[];
+  currOver: string;
 }
+export const updateStatSchema = z.object({
+  runs: z.union([
+    z.literal(0),
+    z.literal(1),
+    z.literal(2),
+    z.literal(3),
+    z.literal(4),
+    z.literal(6),
+  ]),
+  overthrow: z.boolean(),
+  noball: z.boolean(),
+  bye: z.boolean(),
+  legBye: z.boolean(),
+  wide: z.boolean(),
+});
+
+export type UpdateStatType = z.infer<typeof updateStatSchema>;

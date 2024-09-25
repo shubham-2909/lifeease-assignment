@@ -37,8 +37,8 @@ model Player {
 
 model MatchStats {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  currOver     String   @default("0")
-  totalOvers   String   @default("10")
+  currOver     String   @default("0.0")
+  totalOvers   String   @default("10.0")
   lastSixOvers String[] @default([])
 }
 
@@ -53,7 +53,7 @@ model PlayerStats {
   runsGiven           Int     @default(0)
   wicketsTaken        Int     @default(0)
   maidens             Int     @default(0)
-  oversBowled         String  @default("0")
+  oversBowled         String  @default("0.0")
   currentlyOnStrike   Boolean @default(false)
   currentlyNonStriker Boolean @default(false)
   currentlyBowling    Boolean @default(false)
