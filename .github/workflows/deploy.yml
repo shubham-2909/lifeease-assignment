@@ -1,0 +1,43 @@
+name: Deploy Backend to ec2
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Login to Dockerhub
+        uses: docker/login-action@v3
+        with:
+          username: ${{secrets.DOCKER_USERNAME}}
+          password: ${{secrets.DOCKER_PASSWORD}}
+
+      - name: Build and Push to Dockerhub
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: apps/api/Dockerfile # Ensure the correct path without leading slash
+          push: true
+          tags: shubham2909/lifeease-assignment:latest
+
+      - name: deploy to ec2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{secrets.SSH_HOST}}
+          username: ${{secrets.SSH_USERNAME}}
+          key: ${{secrets.SSH_KEY}}
+          script: |
+            sudo docker pull shubham2909/lifeease-assignment:latest
+            sudo docker stop api || true
+            sudo docker rm api || true
+            sudo docker rmi shubham2909/lifeease-assignment || true
+            sudo docker run -d --name api -p 3000:3000 \
+            -e DATABASE_URL='${{ secrets.DATABASE_URL }}' \
+            shubham2909/lifeease-assignment:latest
