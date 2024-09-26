@@ -4,6 +4,8 @@ import { CurrentStats } from '@repo/common/CurrentStats'
 import { updateStatSchema } from '@repo/common/updateStatSchema'
 import {
   handleByeAndLegBye,
+  handleNoBallAndLegByeorBye,
+  handleNoBallAndWide,
   handleNoBallUpdate,
   handleNormalRunsUpdate,
   handleWideBall,
@@ -192,7 +194,7 @@ export const updateTeamStats = async (req: Request, res: Response) => {
       currmatchStats.id
     )
   } else if (wide && !noball && !legBye && !bye) {
-    // wide and wide + overthrow and whatever
+    //case 3 wide and wide + overthrow and whatever
     await handleWideBall(
       runs,
       battingTeam.id,
@@ -202,7 +204,28 @@ export const updateTeamStats = async (req: Request, res: Response) => {
       currmatchStats.id
     )
   } else if (noball && !wide && !bye && !legBye) {
+    // case 4 only no ball and + overthrow doesnt matter
     await handleNoBallUpdate(
+      runs,
+      battingTeam.id,
+      striker.id,
+      nonStriker.id,
+      bowler.id,
+      currmatchStats.id
+    )
+  } else if (noball && wide && !bye && !legBye) {
+    // no ball + wide
+    await handleNoBallAndWide(
+      runs,
+      battingTeam.id,
+      striker.id,
+      nonStriker.id,
+      bowler.id,
+      currmatchStats.id
+    )
+  } else if (noball && (bye || legBye) && !wide) {
+    await handleNoBallAndLegByeorBye(
+      bye ? 'bye' : 'legBye',
       runs,
       battingTeam.id,
       striker.id,
