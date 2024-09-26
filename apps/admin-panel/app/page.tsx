@@ -24,7 +24,10 @@ export default function page() {
     setLoading(true)
     customFetch.get('/teams/get-stats').then((resp) => {
       const dataFromServer = resp.data as CurrentStats
-      setCurrentStats(resp.data as CurrentStats)
+      setCurrentStats({
+        ...dataFromServer,
+        lastSixBalls: dataFromServer.lastSixBalls.slice(1),
+      })
       setStriker(dataFromServer.playerStats.striker.name)
       setNonStriker(dataFromServer.playerStats.nonStriker.name)
       setBowler(dataFromServer.playerStats.bowler.name)

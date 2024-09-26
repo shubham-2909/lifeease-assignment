@@ -71,7 +71,7 @@ export async function handleNormalRunsUpdate(
       where: { id: matchId },
       data: {
         ...(overthrow ? {} : { currOver: updateOversBowled(currOver) }),
-        lastSixOvers: { push: `${runs} Runs` },
+        lastSixOvers: { push: `${runs} runs` },
       },
     })
   })

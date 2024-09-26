@@ -27,6 +27,21 @@ export function MatchUpdate({
   setNonStriker,
   setBowler,
 }: Props) {
+  function handleArrayWithOverthrow(arr: string[]) {
+    // Get the second last element (second last element to combine with last)
+    const secondLast = arr[arr.length - 2]?.split(' ') // ["2", "Runs"]
+    const last = arr[arr.length - 1]?.split(' ') // ["1", "wd"] (or "1 Runs")
+    if (!secondLast || !last) {
+      return arr
+    }
+    // Combine numbers and keep the string part of second last
+    const combined = `${parseInt(secondLast[0]!) + parseInt(last[0]!)} ${secondLast[1]}`
+
+    // Create a new array with combined last two elements
+    const newArr = [...arr.slice(0, arr.length - 2), combined]
+
+    return newArr
+  }
   function handleRunsClick(value: 0 | 1 | 2 | 3 | 4 | 6) {
     setUpdateStats({ ...updateStats, runs: value })
   }
@@ -52,7 +67,17 @@ export function MatchUpdate({
       await customFetch.patch('/teams/update-stats', updateStats)
       let resp = await customFetch.get('/teams/get-stats')
       const updatedStats = resp.data as CurrentStats
-      setCurrentStats(updatedStats)
+      if (updateStats.overthrow) {
+        setCurrentStats({
+          ...updatedStats,
+          lastSixBalls: handleArrayWithOverthrow(updatedStats.lastSixBalls),
+        })
+      } else {
+        setCurrentStats({
+          ...updatedStats,
+          lastSixBalls: updatedStats.lastSixBalls.slice(1),
+        })
+      }
       setStriker(updatedStats.playerStats.striker.name)
       setNonStriker(updatedStats.playerStats.nonStriker.name)
       setBowler(updatedStats.playerStats.bowler.name)

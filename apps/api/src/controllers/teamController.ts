@@ -98,7 +98,7 @@ export const getTeamStats = async (req: Request, res: Response) => {
           oversBowled: bowler.oversBowled,
         },
       },
-      lastSixBalls: matchStats[0]?.lastSixOvers.slice(-6)!,
+      lastSixBalls: matchStats[0]?.lastSixOvers.slice(-7)!,
       currOver: matchStats[0]?.currOver!,
     }
     res.status(200).json(data)
