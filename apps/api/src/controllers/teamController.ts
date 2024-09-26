@@ -2,7 +2,12 @@ import { Request, Response } from 'express'
 import db from '@repo/db/client'
 import { CurrentStats } from '@repo/common/CurrentStats'
 import { updateStatSchema } from '@repo/common/updateStatSchema'
-import { handleNormalRunsUpdate } from '../lib/helpers'
+import {
+  handleByeAndLegBye,
+  handleNoBallUpdate,
+  handleNormalRunsUpdate,
+  handleWideBall,
+} from '@/lib/helpers'
 
 export const getTeamStats = async (req: Request, res: Response) => {
   try {
@@ -165,6 +170,40 @@ export const updateTeamStats = async (req: Request, res: Response) => {
       overthrow,
       currmatchStats.currOver,
       bowler.oversBowled,
+      battingTeam.id,
+      striker.id,
+      nonStriker.id,
+      bowler.id,
+      currmatchStats.id
+    )
+  } else if ((bye || legBye) && !wide && !noball) {
+    //case 2 only bye or legbye with overthrow
+
+    await handleByeAndLegBye(
+      bye ? 'bye' : 'legBye',
+      runs,
+      overthrow,
+      currmatchStats.currOver,
+      bowler.oversBowled,
+      battingTeam.id,
+      striker.id,
+      nonStriker.id,
+      bowler.id,
+      currmatchStats.id
+    )
+  } else if (wide && !noball && !legBye && !bye) {
+    // wide and wide + overthrow and whatever
+    await handleWideBall(
+      runs,
+      battingTeam.id,
+      striker.id,
+      nonStriker.id,
+      bowler.id,
+      currmatchStats.id
+    )
+  } else if (noball && !wide && !bye && !legBye) {
+    await handleNoBallUpdate(
+      runs,
       battingTeam.id,
       striker.id,
       nonStriker.id,
