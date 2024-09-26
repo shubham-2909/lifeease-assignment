@@ -2,18 +2,9 @@
 import { CurrentStats } from "@repo/common/CurrentStats";
 
 type Props = {
-  stats: CurrentStats | null;
-  loading: boolean;
+  stats: CurrentStats;
 };
-export function MatchStats({ stats, loading }: Props) {
-  if (loading) {
-    return <h1>Loading...</h1>;
-  }
-
-  if (!stats) {
-    return <p>An error occured</p>;
-  }
-
+export function MatchStats({ stats }: Props) {
   return (
     <div className="grid grid-cols-1">
       <div className="grid grid-cols-2 gap-8 ">
@@ -54,7 +45,7 @@ export function MatchStats({ stats, loading }: Props) {
             </h3>
             <h2 className="text-xl font-bold">Overs</h2>
             <h3 className="text-lg font-medium">
-              {stats.currOver}/{"10.0"}
+              {"0.0"}/{"10.0"}
             </h3>
           </div>
           <p className="text-sm text-rose-500">Yet to bat</p>
@@ -62,7 +53,6 @@ export function MatchStats({ stats, loading }: Props) {
         ``
       </div>
       <div className="grid grid-cols-2 gap-5">
-        {/* Batting Player Stats Table */}
         <div className="p-4">
           <h3 className="text-xl font-bold mb-2">Batsmen</h3>
           <table className="w-96 border-collapse border border-gray-500">

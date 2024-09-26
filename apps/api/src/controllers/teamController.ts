@@ -1,8 +1,8 @@
-import { Request, Response } from "express";
-import db from "@repo/db/client";
-import { CurrentStats } from "@repo/common/CurrentStats";
-import { updateStatSchema } from "@repo/common/updateStatSchema";
-import { handleNormalRunsUpdate } from "../lib/helpers";
+import { Request, Response } from 'express'
+import db from '@repo/db/client'
+import { CurrentStats } from '@repo/common/CurrentStats'
+import { updateStatSchema } from '@repo/common/updateStatSchema'
+import { handleNormalRunsUpdate } from '../lib/helpers'
 
 export const getTeamStats = async (req: Request, res: Response) => {
   try {
@@ -18,7 +18,7 @@ export const getTeamStats = async (req: Request, res: Response) => {
         noBallRuns: true,
         isBatting: true,
       },
-    });
+    })
     const players = await db.playerStats.findMany({
       where: {
         OR: [
@@ -30,26 +30,26 @@ export const getTeamStats = async (req: Request, res: Response) => {
       include: {
         player: true,
       },
-    });
+    })
 
-    const matchStats = await db.matchStats.findMany();
+    const matchStats = await db.matchStats.findMany()
 
     if (players.length < 3 || teams.length < 2 || !teams[0] || !teams[1]) {
       res.status(500).json({
         error:
-          "Something is wrong with your db please run the seed command to seed your database",
-      });
+          'Something is wrong with your db please run the seed command to seed your database',
+      })
     }
 
-    const battingTeam = teams[0]?.isBatting ? teams[0] : teams[1];
-    const bowlingTeam = teams[0]?.isBatting ? teams[1] : teams[0];
-    const striker = players.find(
-      (player) => player.currentlyOnStrike === true,
-    )!;
+    const battingTeam = teams[0]?.isBatting ? teams[0] : teams[1]
+    const bowlingTeam = teams[0]?.isBatting ? teams[1] : teams[0]
+    const striker = players.find((player) => player.currentlyOnStrike === true)!
     const nonStriker = players.find(
-      (player) => player.currentlyNonStriker === true,
-    )!;
-    const bowler = players.find((player) => player.currentlyBowling === true)!;
+      (player) => player.currentlyNonStriker === true
+    )!
+    const bowler = players.find((player) => player.currentlyBowling === true)!
+    console.log(striker)
+
     const data: CurrentStats = {
       teamStats: {
         battingTeamStats: {
@@ -93,28 +93,29 @@ export const getTeamStats = async (req: Request, res: Response) => {
       },
       lastSixBalls: matchStats[0]?.lastSixOvers.slice(-6)!,
       currOver: matchStats[0]?.currOver!,
-    };
-    res.status(200).json(data);
+    }
+    res.status(200).json(data)
   } catch (error) {
-    res.status(500).json({ error: "Internal Server error" });
+    console.error(error)
+    res.status(500).json({ error: 'Internal Server error' })
   }
-};
+}
 
 export const updateTeamStats = async (req: Request, res: Response) => {
-  const { data, success, error } = updateStatSchema.safeParse(req.body);
+  const { data, success, error } = updateStatSchema.safeParse(req.body)
   if (!success) {
     const errorMessages = error.errors.map((err) => ({
-      path: err.path.join("."),
+      path: err.path.join('.'),
       message: err.message,
-    }));
+    }))
 
     return res.status(400).json({
-      message: "Invalid Inputs",
+      message: 'Invalid Inputs',
       errors: errorMessages,
-    });
+    })
   }
 
-  const { wide, noball, legBye, runs, bye, overthrow } = data;
+  const { wide, noball, legBye, runs, bye, overthrow } = data
 
   const players = await db.playerStats.findMany({
     where: {
@@ -131,31 +132,31 @@ export const updateTeamStats = async (req: Request, res: Response) => {
       currentlyNonStriker: true,
       currentlyBowling: true,
     },
-  });
+  })
 
   const currmatchStats = await db.matchStats.findFirst({
     select: { currOver: true, id: true },
-  });
+  })
 
   const battingTeam = await db.team.findFirst({
     where: { isBatting: true },
     select: { id: true },
-  });
+  })
 
   if (!battingTeam || players.length < 3 || !currmatchStats) {
     return res.status(400).json({
-      error: "Something is wrong with your schema please run a db seed",
-    });
+      error: 'Something is wrong with your schema please run a db seed',
+    })
   }
 
-  const striker = players.find((p) => p.currentlyOnStrike === true);
-  const bowler = players.find((p) => p.currentlyBowling === true);
-  const nonStriker = players.find((p) => p.currentlyNonStriker === true);
+  const striker = players.find((p) => p.currentlyOnStrike === true)
+  const bowler = players.find((p) => p.currentlyBowling === true)
+  const nonStriker = players.find((p) => p.currentlyNonStriker === true)
 
   if (!striker || !bowler || !nonStriker) {
     return res.status(400).json({
-      error: "Something is wrong with your schema please run a db seed",
-    });
+      error: 'Something is wrong with your schema please run a db seed',
+    })
   }
   // case 1 normal and normal + overthrow
   if (!wide && !noball && !bye && !legBye) {
@@ -168,8 +169,8 @@ export const updateTeamStats = async (req: Request, res: Response) => {
       striker.id,
       nonStriker.id,
       bowler.id,
-      currmatchStats.id,
-    );
+      currmatchStats.id
+    )
   }
-  res.status(200).json({ message: "Ok" });
-};
+  res.status(200).json({ message: 'Ok' })
+}
