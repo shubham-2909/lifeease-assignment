@@ -12,7 +12,9 @@ type Props = {
   updateStats: UpdateStatType
   setUpdateStats: Dispatch<SetStateAction<UpdateStatType>>
   setCurrentStats: Dispatch<SetStateAction<CurrentStats | null>>
-  setLoading: Dispatch<SetStateAction<boolean>>
+  setStriker: Dispatch<SetStateAction<string>>
+  setNonStriker: Dispatch<SetStateAction<string>>
+  setBowler: Dispatch<SetStateAction<string>>
 }
 export function MatchUpdate({
   striker,
@@ -21,7 +23,9 @@ export function MatchUpdate({
   updateStats,
   setUpdateStats,
   setCurrentStats,
-  setLoading,
+  setStriker,
+  setNonStriker,
+  setBowler,
 }: Props) {
   function handleRunsClick(value: 0 | 1 | 2 | 3 | 4 | 6) {
     setUpdateStats({ ...updateStats, runs: value })
@@ -44,27 +48,34 @@ export function MatchUpdate({
   }
 
   async function handleSubmit() {
-    setLoading(true)
     try {
       await customFetch.patch('/teams/update-stats', updateStats)
-      const { data: updatedStats } = await customFetch.get('/teams/get-stats')
-      setCurrentStats(updatedStats as CurrentStats)
+      let resp = await customFetch.get('/teams/get-stats')
+      const updatedStats = resp.data as CurrentStats
+      setCurrentStats(updatedStats)
+      setStriker(updatedStats.playerStats.striker.name)
+      setNonStriker(updatedStats.playerStats.nonStriker.name)
+      setBowler(updatedStats.playerStats.bowler.name)
     } catch (error) {
       console.error(error)
     } finally {
       setUpdateStats({
-        ...updateStats,
+        runs: 0,
+        overthrow: false,
         wide: false,
         legBye: false,
         bye: false,
+        noball: false,
       })
-      setLoading(false)
     }
   }
 
   return (
     <div className='flex flex-col items-center p-4 space-y-4 gap-8'>
-      <div className='grid grid-cols-3 gap-4 mb-12 mt-8'>
+      <h1 className='text-2xl font-bold tracking-tighter'>
+        Currently on field
+      </h1>
+      <div className='grid grid-cols-3 gap-8 mb-12 mt-8'>
         <div>
           <h1 className='text-xl font-semibold tracking-tight mb-3'>Striker</h1>
           <div className='border border-gray-400 p-4 text-center bg-emerald-500 text-white'>
@@ -73,21 +84,23 @@ export function MatchUpdate({
           </div>
         </div>
         <div>
-          <h1 className='text-xl font-semibold tracking-tight mb-3'>Striker</h1>
+          <h1 className='text-xl font-semibold tracking-tight mb-3'>
+            Non Striker
+          </h1>
           <div className='border border-gray-400 p-4 text-center bg-emerald-500 text-white'>
             {!nonStriker && 'Loading...'}
             {nonStriker}
           </div>
         </div>
         <div>
-          <h1 className='text-xl font-semibold tracking-tight mb-3'>Striker</h1>
+          <h1 className='text-xl font-semibold tracking-tight mb-3'>Bowler</h1>
           <div className='border border-gray-400 p-4 text-center bg-emerald-500 text-white'>
             {!bowler && 'Loading...'}
             {bowler}
           </div>
         </div>
       </div>
-
+      <h1 className='text-2xl font-bold tracking-tighter'>Change the score</h1>
       <div className='grid grid-cols-4 gap-4'>
         <div
           className={cn(

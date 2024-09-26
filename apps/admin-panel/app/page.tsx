@@ -39,16 +39,22 @@ export default function page() {
   }
   return (
     <main className='h-screen p-4 grid grid-cols-2'>
-      <MatchUpdate
-        striker={striker}
-        nonStriker={nonStriker}
-        bowler={bowler}
-        setCurrentStats={setCurrentStats}
-        updateStats={updateStats}
-        setUpdateStats={setUpdateStats}
-        setLoading={setLoading}
-      />
-      <MatchStats stats={currentStats} />
+      <div className='flex justify-center items-center'>
+        <MatchUpdate
+          striker={striker}
+          nonStriker={nonStriker}
+          bowler={bowler}
+          setCurrentStats={setCurrentStats}
+          updateStats={updateStats}
+          setUpdateStats={setUpdateStats}
+          setStriker={setStriker}
+          setNonStriker={setNonStriker}
+          setBowler={setBowler}
+        />
+      </div>
+      <div className='flex justify-center items-center'>
+        <MatchStats stats={currentStats} />
+      </div>
     </main>
   )
 }
