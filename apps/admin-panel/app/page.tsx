@@ -4,7 +4,11 @@ import { CurrentStats } from "@repo/common/CurrentStats";
 import { UpdateStatType } from "@repo/common/UpdateStatType";
 import customFetch from "./lib/axios";
 import { MatchStats } from "@/components/MatchStats";
+import { MatchUpdate } from "@/components/MatchUpdate";
 export default function page() {
+  const [striker, setStriker] = useState("");
+  const [nonStriker, setNonStriker] = useState("");
+  const [bowler, setBowler] = useState("");
   const [loading, setLoading] = useState(false);
   const [currentStats, setCurrentStats] = useState<CurrentStats | null>(null);
   const [updateStats, setUpdateStats] = useState<UpdateStatType>({
@@ -23,7 +27,7 @@ export default function page() {
 
   return (
     <main className="h-screen p-4 grid grid-cols-2">
-      <div className="bg-emerald-500"></div>
+      <MatchUpdate />
       <MatchStats stats={currentStats} loading={loading} />
     </main>
   );

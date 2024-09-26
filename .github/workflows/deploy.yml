@@ -34,10 +34,10 @@ jobs:
           username: ${{secrets.SSH_USERNAME}}
           key: ${{secrets.SSH_KEY}}
           script: |
-            sudo docker pull shubham2909/lifeease-assignment:latest
             sudo docker stop api || true
             sudo docker rm api || true
-            sudo docker rmi shubham2909/lifeease-assignment || true
+            sudo docker rmi shubham2909/lifeease-assignment:latest || true
+            sudo docker pull shubham2909/lifeease-assignment:latest
             sudo docker run -d --name api -p 5001:5001 \
             -e DATABASE_URL='${{ secrets.DATABASE_URL }}' \
             shubham2909/lifeease-assignment:latest
