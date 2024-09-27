@@ -1,4 +1,4 @@
-# Turborepo starter
+# Turborepo
 
 ### Note you need bun to run it locally if you have not installed please do so
 
@@ -31,7 +31,7 @@ This Turborepo has some additional tools already setup for you:
 - [ESLint](https://eslint.org/) for code linting
 - [Prettier](https://prettier.io) for code formatting
 
-### Develop (only frontend)
+### Develop (only frontend) (for quick setup)
 
 I've already deployed backend through EC2 CI-CD Applied at [Here](https://lifease.webdevka14.in) You can access it
 
