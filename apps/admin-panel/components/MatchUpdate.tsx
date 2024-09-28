@@ -64,9 +64,8 @@ export function MatchUpdate({
 
   async function handleSubmit() {
     try {
-      await customFetch.patch('/teams/update-stats', updateStats)
-      let resp = await customFetch.get('/teams/get-stats')
-      const updatedStats = resp.data as CurrentStats
+      const resp = await customFetch.patch('/teams/update-stats', updateStats)
+      const updatedStats: CurrentStats = resp.data
       if (updateStats.overthrow) {
         setCurrentStats({
           ...updatedStats,

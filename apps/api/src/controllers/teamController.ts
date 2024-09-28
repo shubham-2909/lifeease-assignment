@@ -55,7 +55,6 @@ export const getTeamStats = async (req: Request, res: Response) => {
       (player) => player.currentlyNonStriker === true
     )!
     const bowler = players.find((player) => player.currentlyBowling === true)!
-    console.log(striker)
 
     const data: CurrentStats = {
       teamStats: {
@@ -167,7 +166,7 @@ export const updateTeamStats = async (req: Request, res: Response) => {
   }
   // case 1 normal and normal + overthrow
   if (!wide && !noball && !bye && !legBye) {
-    await handleNormalRunsUpdate(
+    const updatedMatchStats = await handleNormalRunsUpdate(
       runs,
       overthrow,
       currmatchStats.currOver,
@@ -178,10 +177,11 @@ export const updateTeamStats = async (req: Request, res: Response) => {
       bowler.id,
       currmatchStats.id
     )
+    return res.status(200).json(updatedMatchStats)
   } else if ((bye || legBye) && !wide && !noball) {
     //case 2 only bye or legbye with overthrow
 
-    await handleByeAndLegBye(
+    const updatedMatchStats = await handleByeAndLegBye(
       bye ? 'bye' : 'legBye',
       runs,
       overthrow,
@@ -193,9 +193,10 @@ export const updateTeamStats = async (req: Request, res: Response) => {
       bowler.id,
       currmatchStats.id
     )
+    return res.status(200).json(updatedMatchStats)
   } else if (wide && !noball && !legBye && !bye) {
     //case 3 wide and wide + overthrow and whatever
-    await handleWideBall(
+    const updatedMatchStats = await handleWideBall(
       runs,
       battingTeam.id,
       striker.id,
@@ -203,9 +204,10 @@ export const updateTeamStats = async (req: Request, res: Response) => {
       bowler.id,
       currmatchStats.id
     )
+    return res.status(200).json(updatedMatchStats)
   } else if (noball && !wide && !bye && !legBye) {
     // case 4 only no ball and + overthrow doesnt matter
-    await handleNoBallUpdate(
+    const updatedMatchStats = await handleNoBallUpdate(
       runs,
       battingTeam.id,
       striker.id,
@@ -213,9 +215,10 @@ export const updateTeamStats = async (req: Request, res: Response) => {
       bowler.id,
       currmatchStats.id
     )
+    return res.status(200).json(updatedMatchStats)
   } else if (noball && wide && !bye && !legBye) {
     // no ball + wide
-    await handleNoBallAndWide(
+    const updatedMatchStats = await handleNoBallAndWide(
       runs,
       battingTeam.id,
       striker.id,
@@ -223,8 +226,9 @@ export const updateTeamStats = async (req: Request, res: Response) => {
       bowler.id,
       currmatchStats.id
     )
+    return res.status(200).json(updatedMatchStats)
   } else if (noball && (bye || legBye) && !wide) {
-    await handleNoBallAndLegByeorBye(
+    const updatedMatchStats = await handleNoBallAndLegByeorBye(
       bye ? 'bye' : 'legBye',
       runs,
       battingTeam.id,
@@ -233,6 +237,7 @@ export const updateTeamStats = async (req: Request, res: Response) => {
       bowler.id,
       currmatchStats.id
     )
+    return res.status(200).json(updatedMatchStats)
   }
   res.status(200).json({ message: 'Ok' })
 }

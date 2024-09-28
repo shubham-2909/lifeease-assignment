@@ -1,48 +1,49 @@
-import z from "zod";
-export const backendUrl = "https://lifease.webdevka14.in";
+import z from 'zod'
+export const backendUrl = 'https://lifease.webdevka14.in'
+//export const backendUrl = 'http://localhost:5001'
 export interface CurrentStats {
   teamStats: {
     battingTeamStats: {
-      name: string;
-      runs: number;
-      wickets: number;
+      name: string
+      runs: number
+      wickets: number
       extras: {
-        noBallRuns: number;
-        byeRuns: number;
-        legByeRuns: number;
-        wideRuns: number;
-      };
-    };
+        noBallRuns: number
+        byeRuns: number
+        legByeRuns: number
+        wideRuns: number
+      }
+    }
     bowlingTeamStats: {
-      name: string;
-      runs: number;
-      wickets: number;
-    };
-  };
+      name: string
+      runs: number
+      wickets: number
+    }
+  }
   playerStats: {
     striker: {
-      name: string;
-      runsScored: number;
-      ballsPlayed: number;
-      foursCount: number;
-      sixesCount: number;
-    };
+      name: string
+      runsScored: number
+      ballsPlayed: number
+      foursCount: number
+      sixesCount: number
+    }
     nonStriker: {
-      name: string;
-      runsScored: number;
-      ballsPlayed: number;
-      foursCount: number;
-      sixesCount: number;
-    };
+      name: string
+      runsScored: number
+      ballsPlayed: number
+      foursCount: number
+      sixesCount: number
+    }
     bowler: {
-      name: string;
-      runsGiven: number;
-      wicketsTakem: number;
-      oversBowled: string;
-    };
-  };
-  lastSixBalls: string[];
-  currOver: string;
+      name: string
+      runsGiven: number
+      wicketsTakem: number
+      oversBowled: string
+    }
+  }
+  lastSixBalls: string[]
+  currOver: string
 }
 export const updateStatSchema = z.object({
   runs: z.union([
@@ -58,6 +59,6 @@ export const updateStatSchema = z.object({
   bye: z.boolean(),
   legBye: z.boolean(),
   wide: z.boolean(),
-});
+})
 
-export type UpdateStatType = z.infer<typeof updateStatSchema>;
+export type UpdateStatType = z.infer<typeof updateStatSchema>
