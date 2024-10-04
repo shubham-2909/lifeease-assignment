@@ -21,6 +21,7 @@ This Turborepo includes the following packages/apps:
 - `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
 - `@repo/common`: `common type`s used throughout the monorepo
 - `@repo/db`: `Prisma client` used throughout the monorepo
+
   Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 
 ### Utilities
@@ -57,8 +58,8 @@ If you want to develop both backend and frontend locally follow this:
 ```sh
  cd packages/db
  bunx prisma generate
- cd ../../
  bunx prisma db seed
+ cd ../../
 ```
 
 - Run
