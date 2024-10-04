@@ -1,6 +1,6 @@
 import z from 'zod'
-//export const backendUrl = 'https://lifease.webdevka14.in'
-export const backendUrl = 'http://localhost:5001'
+export const backendUrl = 'https://lifease.webdevka14.in'
+//export const backendUrl = 'http://localhost:5001'
 export interface CurrentStats {
   teamStats: {
     battingTeamStats: {
