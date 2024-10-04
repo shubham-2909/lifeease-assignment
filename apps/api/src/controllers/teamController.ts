@@ -177,6 +177,7 @@ export const updateTeamStats = async (req: Request, res: Response) => {
       bowler.id,
       currmatchStats.id
     )
+
     return res.status(200).json(updatedMatchStats)
   } else if ((bye || legBye) && !wide && !noball) {
     //case 2 only bye or legbye with overthrow

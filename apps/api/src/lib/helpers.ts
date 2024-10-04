@@ -82,6 +82,51 @@ export async function handleNormalRunsUpdate(
     }),
   ])
 
+  // return {
+  //   teamStats: {
+  //     battingTeamStats: {
+  //       name: updatedTeamData.name,
+  //       runs: updatedTeamData.runsScored,
+  //       wickets: updatedTeamData.wicketsFallen,
+  //       extras: {
+  //         wideRuns: updatedTeamData.wideRuns,
+  //         noBallRuns: updatedTeamData.noBallRuns,
+  //         byeRuns: updatedTeamData.byeRuns,
+  //         legByeRuns: updatedTeamData.legByeRuns,
+  //       },
+  //     },
+  //     bowlingTeamStats: {
+  //       // sorry hardcoding for now but yeah we can keep it as dynamic
+  //       name: 'Australia',
+  //       runs: 0,
+  //       wickets: 0,
+  //     },
+  //   },
+  //   playerStats: {
+  //     striker: {
+  //       name: updatedStrikerData.player?.name || '',
+  //       runsScored: updatedStrikerData.runsScored,
+  //       ballsPlayed: updatedStrikerData.ballsPlayed,
+  //       foursCount: updatedStrikerData.foursCount,
+  //       sixesCount: updatedStrikerData.sixesCount,
+  //     },
+  //     nonStriker: {
+  //       name: updatedNonStrikerData.player?.name || '',
+  //       runsScored: updatedNonStrikerData.runsScored,
+  //       ballsPlayed: updatedNonStrikerData.ballsPlayed,
+  //       foursCount: updatedNonStrikerData.foursCount,
+  //       sixesCount: updatedNonStrikerData.sixesCount,
+  //     },
+  //     bowler: {
+  //       name: updatedBowlerData.player?.name || '',
+  //       runsGiven: updatedBowlerData.runsGiven,
+  //       wicketsTakem: updatedBowlerData.wicketsTaken,
+  //       oversBowled: updatedBowlerData.oversBowled,
+  //     },
+  //   },
+  //   lastSixBalls: updatedMatchStats.lastSixOvers.slice(-7),
+  //   currOver: updatedMatchStats.currOver,
+  // }
   return {
     teamStats: {
       battingTeamStats: {
@@ -96,31 +141,48 @@ export async function handleNormalRunsUpdate(
         },
       },
       bowlingTeamStats: {
-        // sorry hardcoding for now but yeah we can keep it as dynamic
         name: 'Australia',
         runs: 0,
         wickets: 0,
       },
     },
     playerStats: {
-      striker: {
-        name: updatedStrikerData.player?.name || '',
-        runsScored: updatedStrikerData.runsScored,
-        ballsPlayed: updatedStrikerData.ballsPlayed,
-        foursCount: updatedStrikerData.foursCount,
-        sixesCount: updatedStrikerData.sixesCount,
-      },
-      nonStriker: {
-        name: updatedNonStrikerData.player?.name || '',
-        runsScored: updatedNonStrikerData.runsScored,
-        ballsPlayed: updatedNonStrikerData.ballsPlayed,
-        foursCount: updatedNonStrikerData.foursCount,
-        sixesCount: updatedNonStrikerData.sixesCount,
-      },
+      striker:
+        (runs === 1 || runs === 3) && !currOver.endsWith('.5')
+          ? {
+              name: updatedNonStrikerData.player?.name || '',
+              runsScored: updatedNonStrikerData.runsScored,
+              ballsPlayed: updatedNonStrikerData.ballsPlayed,
+              foursCount: updatedNonStrikerData.foursCount,
+              sixesCount: updatedNonStrikerData.sixesCount,
+            }
+          : {
+              name: updatedStrikerData.player?.name || '',
+              runsScored: updatedStrikerData.runsScored,
+              ballsPlayed: updatedStrikerData.ballsPlayed,
+              foursCount: updatedStrikerData.foursCount,
+              sixesCount: updatedStrikerData.sixesCount,
+            },
+      nonStriker:
+        (runs === 1 || runs === 3) && !currOver.endsWith('.5')
+          ? {
+              name: updatedStrikerData.player?.name || '',
+              runsScored: updatedStrikerData.runsScored,
+              ballsPlayed: updatedStrikerData.ballsPlayed,
+              foursCount: updatedStrikerData.foursCount,
+              sixesCount: updatedStrikerData.sixesCount,
+            }
+          : {
+              name: updatedNonStrikerData.player?.name || '',
+              runsScored: updatedNonStrikerData.runsScored,
+              ballsPlayed: updatedNonStrikerData.ballsPlayed,
+              foursCount: updatedNonStrikerData.foursCount,
+              sixesCount: updatedNonStrikerData.sixesCount,
+            },
       bowler: {
         name: updatedBowlerData.player?.name || '',
         runsGiven: updatedBowlerData.runsGiven,
-        wicketsTakem: updatedBowlerData.wicketsTaken,
+        wicketsTakem: updatedBowlerData.wicketsTaken, // Fix the typo here
         oversBowled: updatedBowlerData.oversBowled,
       },
     },
