@@ -1,6 +1,6 @@
 # Turborepo
 
-### Note you need bun to run it locally if you have not installed please do so
+### Bun is only used as package manager (the runtime is still express)
 
 ```sh
 npm install -g bun #(The last npm command you'll ever need)
